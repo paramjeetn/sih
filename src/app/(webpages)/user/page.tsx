@@ -1,15 +1,17 @@
 import React from 'react';
-import Navbar from '@/components/Navbar';
+import Sidebar from '@/components/Sidebar';
+import ComplaintsTable from '@/components/ComplaintsTable';
 
-const UserPage = () => {
+const UserDashboard = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-grow flex justify-center items-center bg-gray-100 p-6">
-        <h1 className="text-2xl">User Dashboard</h1>
-      </main>
+    <div className="flex">
+      <Sidebar />
+      <div className="flex-grow p-6">
+        <h1 className="text-2xl font-bold mb-4">Your Complaints</h1>
+        <ComplaintsTable />
+      </div>
     </div>
   );
 };
 
-export default UserPage;
+export default UserDashboard;
