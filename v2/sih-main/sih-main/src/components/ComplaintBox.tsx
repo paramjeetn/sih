@@ -104,11 +104,11 @@ const ComplaintBox = () => {
   }, [isOtpDialogOpen, otpValid]);
 
   return (
-    <div className="bg-blue-900 shadow-md p-6 rounded-md w-full max-w-lg mx-auto mt-8">
-      <h2 className="block text-white font-semibold text-2xl mb-1" style={{ fontFamily: 'Times New Roman, serif' }}>Grievance Detail</h2>
+    <div className="bg-white shadow-md p-6 rounded-md w-full max-w-lg mx-auto mt-8">
+      <h2 className="text-xl font-bold mb-4">Grievance Detail</h2>
       <form>
         <div className="mb-4">
-          <label className="block text-white font-semibold mb-1">Mobile No.</label>
+          <label className="block text-gray-700 mb-1">Mobile No.</label>
           <Input
             type="text"
             placeholder="Enter your mobile number"
@@ -125,7 +125,7 @@ const ComplaintBox = () => {
           </Button>
         </div>
         <div className="mb-4">
-          <label className="block text-white font-semibold mb-1">Journey Details</label>
+          <label className="block text-gray-700 mb-1">Journey Details</label>
           <Input
             type="text"
             placeholder="Enter your PNR No."
@@ -135,7 +135,7 @@ const ComplaintBox = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-white font-semibold mb-1">Type</label>
+          <label className="block text-gray-700 mb-1">Type</label>
           <Select onValueChange={handleTypeChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select Type" />
@@ -148,7 +148,7 @@ const ComplaintBox = () => {
         </div>
         {type && (
           <div className="mb-4">
-            <label className="block text-white font-semibold mb-1">{type === "complaint" ? "Complaint Details" : "Suggestion Details"}</label>
+            <label className="block text-gray-700 mb-1">{type === "complaint" ? "Complaint Details" : "Suggestion Details"}</label>
             <Textarea
               placeholder={`Enter your ${type} details here`}
               value={details}
@@ -159,7 +159,7 @@ const ComplaintBox = () => {
           </div>
         )}
         <div className="mb-4">
-          <label className="block text-white font-semibold mb-1">Incident Date</label>
+          <label className="block text-gray-700 mb-1">Incident Date</label>
           <Input
             type="datetime-local"
             value={incidentDate}
@@ -168,7 +168,7 @@ const ComplaintBox = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-white font-semibold mb-1">Upload File</label>
+          <label className="block text-gray-700 mb-1">Upload File</label>
           <Input
             type="file"
             onChange={handleFileChange}
@@ -178,7 +178,7 @@ const ComplaintBox = () => {
           {fileError && <p className="text-red-600 mt-2">{fileError}</p>}
         </div>
         <div className="mb-4">
-          <label className="block text-white font-semibold mb-1">Grievance Description</label>
+          <label className="block text-gray-700 mb-1">Grievance Description</label>
           <Textarea placeholder="Describe your grievance here" className="w-full" />
         </div>
         <div className="flex space-x-4">

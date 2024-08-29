@@ -15,11 +15,10 @@
 
 // export default AdminPage;
 
-"use client";
 
+// =============================================================
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Import the router from next/navigation
-import { useComplaint } from '../../../lib/ComplaintContext'; // Adjust the path
+import Link from 'next/link';
 
 interface Complaint {
   problemId: number;
@@ -27,7 +26,6 @@ interface Complaint {
   complaint: string;
   date: string;
   severity: 'High' | 'Mid' | 'Low';
-  description?: string;
 }
 
 interface Admin {
@@ -39,14 +37,12 @@ interface Admin {
 }
 
 const AdminDashboard = () => {
-  const router = useRouter(); // Initialize the router
-
   // Mock data for now
   const mockComplaints: Complaint[] = [
-    { problemId: 123, pnr: 22, complaint: 'Sample Complaint 1', date: '23/01/22', severity: 'High', description: 'Detailed description of complaint 1.' },
-    { problemId: 233, pnr: 32, complaint: 'Sample Complaint 2', date: '21/01/21', severity: 'High', description: 'Detailed description of complaint 2.' },
-    { problemId: 334, pnr: 23, complaint: 'Sample Complaint 3', date: '08/11/23', severity: 'Mid', description: 'Detailed description of complaint 3.' },
-    { problemId: 4334, pnr: 11, complaint: 'Sample Complaint 4', date: '09/12/24', severity: 'Low', description: 'Detailed description of complaint 4.' },
+    { problemId: 123, pnr: 22, complaint: 'Sample Complaint 1', date: '23/01/22', severity: 'High' },
+    { problemId: 233, pnr: 32, complaint: 'Sample Complaint 2', date: '21/01/21', severity: 'High' },
+    { problemId: 334, pnr: 23, complaint: 'Sample Complaint 3', date: '08/11/23', severity: 'Mid' },
+    { problemId: 4334, pnr: 11, complaint: 'Sample Complaint 4', date: '09/12/24', severity: 'Low' },
   ];
 
   const mockAdmin: Admin = {
@@ -56,8 +52,6 @@ const AdminDashboard = () => {
     totalComplaintsHandled: 120,
     profileImage: '/path-to-profile-image.jpg',
   };
-
-  const { setComplaint } = useComplaint();
 
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [admin, setAdmin] = useState<Admin | null>(null);
@@ -87,11 +81,6 @@ const AdminDashboard = () => {
     }
 
     // Optionally, you could make an API call here to update the database
-  };
-
-  const handleComplaintClick = (complaint: Complaint) => {
-    setComplaint(complaint); // Set the complaint in context if needed
-    router.push(`/admin/${complaint.problemId}`); // Navigate to the complaint details page
   };
 
   return (
@@ -138,12 +127,9 @@ const AdminDashboard = () => {
                   <td className="border-b border-gray-300 py-2 px-4">{complaint.problemId}</td>
                   <td className="border-b border-gray-300 py-2 px-4">{complaint.pnr}</td>
                   <td className="border-b border-gray-300 py-2 px-4">
-                    <span
-                      className="text-blue-600 hover:underline cursor-pointer"
-                      onClick={() => handleComplaintClick(complaint)}
-                    >
+                    <Link href={`/complaints/${complaint.problemId}`} className="text-blue-600 hover:underline">
                       {complaint.complaint}
-                    </span>
+                    </Link>
                   </td>
                   <td className="border-b border-gray-300 py-2 px-4">{complaint.date}</td>
                   <td className="border-b border-gray-300 py-2 px-4">
