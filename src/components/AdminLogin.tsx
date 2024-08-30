@@ -34,6 +34,7 @@ const AdminLogin = () => {
             email: adminData.email,
             department: adminData.department,
             profileImage: adminData.profileImage || '/default-profile.png',
+            totalComplaintsHandled: adminData.totalComplaintsHandled,
           };
 
           // Store admin details in local storage

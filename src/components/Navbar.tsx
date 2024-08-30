@@ -101,13 +101,13 @@
 // src/components/Navbar.tsx
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from 'next/navigation'; // Import useRouter from next/navigation
+import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 import { FiMenu } from "react-icons/fi";
 import { useAuth } from "@/components/AuthProvider";
-import { Button } from "@/components/ui/button";  // Using ShadCN Button component
-import { signOut } from "firebase/auth";  // Importing signOut from Firebase Auth
-import { auth } from "@/lib/firebaseConfig";  // Importing the auth instance
+import { Button } from "@/components/ui/button";  
+import { signOut } from "firebase/auth";  
+import { auth } from "@/lib/firebaseConfig";  
 import {
   Dialog,
   DialogContent,
@@ -119,14 +119,30 @@ import Login from "@/components/Login";
 import Register from "@/components/Register";
 
 const Navbar: React.FC = () => {
-  const router = useRouter(); // Initialize the router
+  const router = useRouter(); 
   const { user } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if admin details are stored in local storage
+    const adminDetails = localStorage.getItem('adminDetails');
+    if (adminDetails) {
+      console.log(adminDetails)
+      setIsAdminLoggedIn(true);
+    }
+  }, []); // Empty dependency array to run once on mount
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      if (isAdminLoggedIn) {
+        // Remove admin details from local storage
+        localStorage.removeItem('adminDetails');
+        setIsAdminLoggedIn(false);
+      } else {
+        await signOut(auth);
+      }
       router.push('/home'); // Redirect to /home after logout
     } catch (error) {
       console.error("Error signing out:", error);
@@ -138,7 +154,7 @@ const Navbar: React.FC = () => {
       <div className="flex items-center">
         <FiMenu className="mr-2" />
         <img
-          src="/rail-logo.png" // Ensure this path is correct for your image
+          src="/rail-logo.png" 
           alt="IRCTC Logo"
           width={50}
           height={50}
@@ -152,10 +168,10 @@ const Navbar: React.FC = () => {
         </span>
       </div>
       <div className="flex items-center space-x-4">
-        {user ? (
+        {(user || isAdminLoggedIn) ? (
           <>
             <div className="flex items-center space-x-2">
-              <span className="text-white">{user.email}</span>
+              <span className="text-white">{user ? user.email : 'Admin'}</span>
             </div>
             <Button onClick={handleLogout} variant="outline" className="text-white border-white hover:bg-white hover:text-blue-900">
               Logout

@@ -1,15 +1,10 @@
-// src/app/[webpages]/admin/layout.tsx
 import React from 'react';
-import { ComplaintProvider } from '../../../lib/ComplaintContext'; // Adjust the path based on your structure
+import { DepartmentProvider } from '@/lib/DepartementContext'; // Adjust the path based on your structure
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DepartmentLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ComplaintProvider>
+    <DepartmentProvider>
       {children}
-    </ComplaintProvider>
+    </DepartmentProvider>
   );
 }

@@ -1,17 +1,38 @@
 "use client";
 
-import React from 'react';
-import { useComplaint } from '../../../../lib/ComplaintContext';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
-const ComplaintDashboard = () => {
-  const { complaint } = useComplaint();
+interface Complaint {
+  id: string;
+  userId: number;
+  problemId: number;
+  phone: number;
+  pnr: number;
+  enhancedComplaint: string;
+  severity?: 'High' | 'Mid' | 'Low';
+  date: string;
+  status: string;
+  email: string;
+  fileUrl?: string;
+  department?: string;
+}
 
-  // Custom media data
-  const media = {
-    image: "/path-to-image.jpg", // Replace with actual image path or URL
-    audio: "/path-to-audio.mp3", // Replace with actual audio path or URL
-    video: "/path-to-video.mp4", // Replace with actual video path or URL
-  };
+const ComplaintDetails = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [complaint, setComplaint] = useState<Complaint | null>(null);
+
+  useEffect(() => {
+    const complaintData = searchParams.get('complaint');
+    if (complaintData) {
+      setComplaint(JSON.parse(complaintData));
+    } else {
+      // If no complaint data is found, navigate back to the admin dashboard
+      router.push('/admin');
+    }
+  }, [router, searchParams]);
 
   if (!complaint) {
     return <div>Loading...</div>;
@@ -21,9 +42,9 @@ const ComplaintDashboard = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200 p-6">
       <div className="bg-white shadow-2xl rounded-lg p-10 w-full max-w-3xl border border-gray-300">
         <h1 className="text-4xl font-bold mb-10 text-center text-gray-800 border-b-2 border-gray-200 pb-4">
-          Complaint Dashboard
+          Complaint Details
         </h1>
-        
+
         <div className="space-y-8">
           <div className="flex flex-col">
             <span className="font-semibold text-lg text-gray-600">Problem ID:</span>
@@ -32,7 +53,7 @@ const ComplaintDashboard = () => {
           <hr className="border-t border-gray-200 my-4" />
           <div className="flex flex-col">
             <span className="font-semibold text-lg text-gray-600">Complaint:</span>
-            <span className="text-gray-900 mt-2">{complaint.complaint}</span>
+            <span className="text-gray-900 mt-2">{complaint.enhancedComplaint}</span>
           </div>
           <hr className="border-t border-gray-200 my-4" />
           <div className="flex flex-col">
@@ -60,47 +81,19 @@ const ComplaintDashboard = () => {
             </span>
           </div>
           <hr className="border-t border-gray-200 my-4" />
-          <div className="flex flex-col">
-            <span className="font-semibold text-lg text-gray-600">Description:</span>
-            <span className="text-gray-900 mt-2">{complaint.description}</span>
-          </div>
 
-          {/* Media Section */}
-          <div className="flex flex-col mt-8">
-            <span className="font-semibold text-lg text-gray-600">Attached Media:</span>
-            <div className="mt-4 space-y-4 border border-dashed border-gray-300 p-4 rounded-lg">
-              {media.image && (
-                <div>
-                  <span className="font-medium text-gray-700">Image:</span>
-                  <a href={media.image} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-2">
-                    View Image
-                  </a>
-                </div>
-              )}
-              {media.audio && (
-                <div>
-                  <span className="font-medium text-gray-700">Audio:</span>
-                  <audio controls className="ml-2 mt-2 w-full">
-                    <source src={media.audio} type="audio/mpeg" />
-                    Your browser does not support the audio element.
-                  </audio>
-                </div>
-              )}
-              {media.video && (
-                <div>
-                  <span className="font-medium text-gray-700">Video:</span>
-                  <video controls className="ml-2 mt-2 w-full max-w-full rounded-lg shadow-md">
-                    <source src={media.video} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              )}
+          {complaint.fileUrl && (
+            <div className="flex flex-col mt-8">
+              <span className="font-semibold text-lg text-gray-600">Attached File:</span>
+              <a href={complaint.fileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline mt-2">
+                View File
+              </a>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default ComplaintDashboard;
+export default ComplaintDetails;
