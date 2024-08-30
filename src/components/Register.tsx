@@ -30,7 +30,7 @@ const Register = () => {
         phoneNumber: phoneNumber,
       });
 
-      router.push("/");
+      router.push("/user");
     } catch (error: any) {
       setError(error.message);
     }

@@ -1,13 +1,17 @@
-"use client"
+"use client";
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 interface Complaint {
-  problemId: number;
-  pnr: number;
-  complaint: string;
-  date: string;
-  severity: 'High' | 'Mid' | 'Low';
-  description?: string;
+  userId: string;
+  problemId: string;
+  mobileNo: string;
+  complaintText: string;
+  date: string; // This corresponds to incidentDate from your schema
+  severity?: 'High' | 'Mid' | 'Low';
+  grievanceDescription?: string;
+  status?: string;
+  fileUrl?: string;
+  pnr?: string; // Assuming pnr is also part of your schema
 }
 
 interface ComplaintContextType {

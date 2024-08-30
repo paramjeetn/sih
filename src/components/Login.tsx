@@ -20,7 +20,7 @@ const Login = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/");
+      router.push("/user");
     } catch (error: any) {
       setError(error.message);
     }

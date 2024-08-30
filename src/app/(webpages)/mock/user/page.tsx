@@ -1,41 +1,126 @@
-// "use client"
-// import React from 'react';
-// import Navbar from '@/components/Navbar';
+// "use client";
 
-// const AdminPage = () => {
+// import React, { useEffect, useState } from 'react';
+// import { collection, query, where, getDocs } from "firebase/firestore";
+// import { db } from "@/lib/firebaseConfig"; // Adjust the path to your Firebase configuration
+
+// // Define the type for a complaint
+// interface Complaint {
+//   id: string;
+//   problemId: string;
+//   complaintText: string;
+//   grievanceDescription: string;
+//   incidentDate: string;
+//   mobileNo: string;
+//   createdAt: any; // You can use `firebase.firestore.Timestamp` if you import it
+//   fileUrl: string;
+//   severity?: 'High' | 'Mid' | 'Low'; // Optional, since severity might not be present
+// }
+
+// const MockUserDashboard = () => {
+//   const [userComplaints, setUserComplaints] = useState<Complaint[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   // Hardcoded mock mobile number
+//   const mockMobileNumber = "9692639456";
+
+//   useEffect(() => {
+//     const fetchComplaints = async () => {
+//       try {
+//         // Query to find complaints by mobile number
+//         const complaintsQuery = query(
+//           collection(db, "complaints"),
+//           where("mobileNo", "==", mockMobileNumber)
+//         );
+
+//         const complaintsSnapshot = await getDocs(complaintsQuery);
+//         const complaints: Complaint[] = complaintsSnapshot.docs.map(doc => ({
+//           id: doc.id,
+//           ...doc.data()
+//         })) as Complaint[]; // Explicitly type this as an array of Complaint
+
+//         setUserComplaints(complaints);
+//       } catch (err) {
+//         if (err instanceof Error) {
+//           console.error("Error fetching data:", err);
+//           setError(err.message);
+//         } else {
+//           console.error("Unexpected error", err);
+//           setError("An unexpected error occurred.");
+//         }
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchComplaints();
+//   }, []);
+
+//   if (loading) return <div>Loading...</div>;
+//   if (error) return <div>Error: {error}</div>;
+
 //   return (
-//     <div className="min-h-screen flex flex-col">
-//       <Navbar />
-//       <main className="flex-grow flex justify-center items-center bg-gray-100 p-6">
-//         <h1 className="text-2xl">Admin Dashboard</h1>
-//       </main>
+//     <div className="min-h-screen flex flex-col p-6 bg-gray-100">
+//       <div className="bg-white shadow-md rounded-lg p-6 max-w-4xl mx-auto">
+//         <h1 className="text-2xl font-semibold mb-4">Mock User Dashboard</h1>
+//         <h2 className="text-xl font-semibold mt-6 mb-2">Your Complaints</h2>
+//         {userComplaints.length === 0 ? (
+//           <p>No complaints found.</p>
+//         ) : (
+//           <ul>
+//             {userComplaints.map(complaint => (
+//               <li key={complaint.id} className="mb-4 border-b pb-4">
+//                 <p><strong>Problem ID:</strong> {complaint.problemId}</p>
+//                 <p><strong>Complaint:</strong> {complaint.complaintText}</p>
+//                 <p><strong>Grievance Description:</strong> {complaint.grievanceDescription}</p>
+//                 <p><strong>Incident Date:</strong> {complaint.incidentDate}</p>
+//                 <p><strong>Created At:</strong> {new Date(complaint.createdAt.toDate()).toLocaleString()}</p>
+//                 <p><strong>File:</strong> <a href={complaint.fileUrl} target="_blank" rel="noopener noreferrer">View File</a></p>
+//                 <p><strong>Severity:</strong> <span
+//                   className={`inline-block px-3 py-1 rounded-full ${
+//                     complaint.severity === 'High'
+//                       ? 'bg-red-100 text-red-800'
+//                       : complaint.severity === 'Mid'
+//                       ? 'bg-yellow-100 text-yellow-800'
+//                       : complaint.severity === 'Low'
+//                       ? 'bg-green-100 text-green-800'
+//                       : ''
+//                   }`}
+//                 >
+//                   {complaint.severity}
+//                 </span></p>
+//               </li>
+//             ))}
+//           </ul>
+//         )}
+//       </div>
 //     </div>
 //   );
 // };
 
-// export default AdminPage;
+// export default MockUserDashboard;
+
 
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useComplaint } from '../../../lib/ComplaintContext';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { useComplaint } from '@/lib/ComplaintContext';
+import { collection, query, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebaseConfig';
 
 interface Complaint {
-  id: string;
-  userId: number;
-  problemId: number;
-  phone: number;
-  pnr: number;
-  enhancedComplaint: string;
+  userId: string;
+  problemId: string;
+  mobileNo: string;
+  complaintText: string;
+  date: string; // This corresponds to incidentDate from your schema
   severity?: 'High' | 'Mid' | 'Low';
-  date: string;
-  status: boolean;
-  email: string;
+  grievanceDescription?: string;
+  status?: string;
   fileUrl?: string;
-  department?: string;
+  pnr?: string; // Assuming pnr is also part of your schema
 }
 
 interface Admin {
@@ -62,18 +147,16 @@ const AdminDashboard = () => {
       querySnapshot.forEach((doc) => {
         const data = doc.data();
         fetchedComplaints.push({
-          id: doc.id,
           userId: data.userId,
           problemId: data.problemId,
-          phone: data.phone,
-          pnr: data.pnr,
-          enhancedComplaint: data.enhancedComplaint,
+          mobileNo: data.mobileNo,
+          complaintText: data.complaintText,
+          date: data.incidentDate,
           severity: data.severity,
-          date: data.date,
+          grievanceDescription: data.grievanceDescription,
           status: data.status,
-          email: data.email,
           fileUrl: data.fileUrl,
-          department: data.department,
+          pnr: data.pnr,
         });
       });
 
@@ -81,7 +164,10 @@ const AdminDashboard = () => {
     };
 
     const fetchAdminDetails = async () => {
-      const q = query(collection(db, 'departments'), where('email', '==', 'admin@example.com')); // Replace with actual email or identifier
+      const q = query(
+        collection(db, 'departments'), 
+        where('email', '==', 'admin@example.com')
+        ); // Replace with actual email or identifier
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
@@ -92,7 +178,7 @@ const AdminDashboard = () => {
           name: adminData.name,
           email: adminData.email,
           phone: adminData.phone,
-          totalComplaintsHandled: fetchedComplaints.length, // Update based on fetched complaints
+          totalComplaintsHandled: fetchedComplaints.length,
           profileImage: adminData.profileImage,
         });
       }
@@ -102,7 +188,7 @@ const AdminDashboard = () => {
     fetchAdminDetails();
   }, []);
 
-  const markAsSolved = (problemId: number) => {
+  const markAsSolved = (problemId: string) => {
     const updatedComplaints = complaints.filter((complaint) => complaint.problemId !== problemId);
     setComplaints(updatedComplaints);
 
@@ -166,7 +252,7 @@ const AdminDashboard = () => {
                       className="text-blue-600 hover:underline cursor-pointer"
                       onClick={() => handleComplaintClick(complaint)}
                     >
-                      {complaint.enhancedComplaint}
+                      {complaint.complaintText}
                     </span>
                   </td>
                   <td className="border-b border-gray-300 py-2 px-4">{complaint.date}</td>
