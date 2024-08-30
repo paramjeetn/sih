@@ -1,28 +1,39 @@
+// src/components/Footer.tsx
+
 "use client";
 
 import React, { useState } from 'react';
-import CustomModal from './CustomModal';
 import { Button } from './ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import AdminLogin from '@/components/AdminLogin'; // Adjusted path to match your structure
 
 const Footer = () => {
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isAdminLoginModalOpen, setAdminLoginModalOpen] = useState(false);
 
-  const toggleModal = () => {
-    setModalOpen(!isModalOpen);
+  const toggleAdminLoginModal = () => {
+    setAdminLoginModalOpen(!isAdminLoginModalOpen);
   };
 
   return (
     <footer className="bg-gray-800 text-white p-4 text-center">
       <div>
         &copy; 2024 RAIL MADAD. All rights reserved. |{' '}
-        <Button variant="link" onClick={toggleModal} className="text-white underline">
-          FAQ
+        <Button variant="link" onClick={toggleAdminLoginModal} className="text-white underline">
+          Admin Login
         </Button>
       </div>
-      <CustomModal isOpen={isModalOpen} toggleModal={toggleModal}>
-        <h2 className="text-xl font-bold mb-4">Frequently Asked Questions</h2>
-        <p className="mb-4">Here are some common questions and answers...</p>
-      </CustomModal>
+
+      <Dialog open={isAdminLoginModalOpen} onOpenChange={setAdminLoginModalOpen}>
+        <DialogTrigger asChild>
+          <span />
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Admin Login</DialogTitle>
+          </DialogHeader>
+          <AdminLogin />
+        </DialogContent>
+      </Dialog>
     </footer>
   );
 };
