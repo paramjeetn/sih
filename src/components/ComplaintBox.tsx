@@ -94,6 +94,23 @@ const ComplaintBox = () => {
     }
   };
 
+
+   // Reset form fields
+   const handleReset = () => {
+    setMobileNumber("");
+    setIsMobileValid(false);
+    setType("");
+    setComplaintText("");
+    setGrievanceDescription("");
+    setIncidentDate("");
+    setFileError("");
+    setNotification(""); // Clear notifications
+    if (fileInput.current) {
+      fileInput.current.value = ""; // Clear file input
+    }
+  };
+
+
   return (
     <div className="bg-white shadow-md p-6 rounded-md w-full max-w-lg mx-auto mt-8">
       <h2 className="text-xl font-bold mb-4">Grievance Detail</h2>
@@ -163,7 +180,7 @@ const ComplaintBox = () => {
         </div>
         <div className="flex space-x-4">
           <Button type="submit">Submit</Button>
-          <Button variant="outline" type="reset">Reset</Button>
+          <Button variant="outline" type="button" onClick={handleReset}>Reset</Button>
         </div>
       </form>
 
